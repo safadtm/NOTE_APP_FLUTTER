@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:note_app_sample/view/screen_add_notes.dart';
 
 class ScreenAllNotes extends StatelessWidget {
@@ -13,18 +11,21 @@ class ScreenAllNotes extends StatelessWidget {
         title: Text('All Notes'),
       ),
       body: SafeArea(
-        child: GridView.count(
-          crossAxisCount: 2,
-          mainAxisSpacing: 10,
-          crossAxisSpacing: 10,
-          children: List.generate(
-              10,
-              (index) => NoteItem(
-                    id: index.toString(),
-                    title: 'lores Ipsum Title $index',
-                    content:
-                        'Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime mollitia',
-                  )),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: GridView.count(
+            crossAxisCount: 2,
+            mainAxisSpacing: 10,
+            crossAxisSpacing: 10,
+            children: List.generate(
+                10,
+                (index) => NoteItem(
+                      id: index.toString(),
+                      title: 'lores Ipsum Title $index',
+                      content:
+                          'Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime mollitia',
+                    )),
+          ),
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
