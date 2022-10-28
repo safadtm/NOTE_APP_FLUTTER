@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
+import 'package:note_app_sample/view/screen_all_notes.dart';
+import 'package:note_app_sample/view/screen_signin.dart';
 
 class ScreenSignUp extends StatefulWidget {
   const ScreenSignUp({super.key});
@@ -53,20 +55,29 @@ class _ScreenSignUpState extends State<ScreenSignUp> {
               const SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
-                  Text(
+                children: [
+                  const Text(
                     'If you already have an Account? ',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 18,
                     ),
                   ),
-                  Text(
-                    'Login',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
+                  InkWell(
+                    onTap: () {
+                      Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(
+                              builder: (builder) => const ScreenSignIn()),
+                          (route) => false);
+                    },
+                    child: const Text(
+                      'Login',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ],
@@ -90,10 +101,13 @@ class _ScreenSignUpState extends State<ScreenSignUp> {
             email: _emailController.text,
             password: _passwordController.text,
           );
-          print(userCredential.user!.email);
           setState(() {
             circular = false;
           });
+          Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (builder) => const ScreenAllNotes()),
+              (route) => false);
         } catch (e) {
           final snackbar = SnackBar(content: Text(e.toString()));
           ScaffoldMessenger.of(context).showSnackBar(snackbar);
@@ -147,7 +161,11 @@ class _ScreenSignUpState extends State<ScreenSignUp> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, size: size),
+            Icon(
+              icon,
+              size: size,
+              color: Colors.white,
+            ),
             const SizedBox(width: 15),
             Text(
               buttonName,

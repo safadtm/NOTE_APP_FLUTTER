@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
+import 'package:note_app_sample/view/screen_all_notes.dart';
 
 class ScreenSignIn extends StatefulWidget {
   const ScreenSignIn({super.key});
@@ -9,6 +10,13 @@ class ScreenSignIn extends StatefulWidget {
 }
 
 class _ScreenSignInState extends State<ScreenSignIn> {
+  firebase_auth.FirebaseAuth firebaseAuth = firebase_auth.FirebaseAuth.instance;
+
+  TextEditingController _emailController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
+
+  bool circular = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,9 +46,9 @@ class _ScreenSignInState extends State<ScreenSignIn> {
                 style: TextStyle(color: Colors.white, fontSize: 18),
               ),
               const SizedBox(height: 15),
-              textItem("Email...."),
+              textItem("Email....", _emailController, false),
               const SizedBox(height: 15),
-              textItem("Password..."),
+              textItem("Password...", _passwordController, true),
               const SizedBox(height: 30),
               colorButton(),
               const SizedBox(height: 20),
@@ -62,16 +70,16 @@ class _ScreenSignInState extends State<ScreenSignIn> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  SizedBox(height: 10),
-                  Text(
-                    'Forgot Password?',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 17,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                  SizedBox(height: 12),
                 ],
+              ),
+              const Text(
+                'Forgot Password?',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 17,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ],
           ),
@@ -81,26 +89,51 @@ class _ScreenSignInState extends State<ScreenSignIn> {
   }
 
   Widget colorButton() {
-    return Container(
-      width: MediaQuery.of(context).size.width - 90,
-      height: 60,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-        gradient: const LinearGradient(
-          colors: [
-            Color(0xfffd746c),
-            Color(0xffff9068),
-            Color(0xfffd746c),
-          ],
-        ),
-      ),
-      child: const Center(
-        child: Text(
-          "Sign In",
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 20,
+    return InkWell(
+      onTap: () async {
+        try {
+          firebase_auth.UserCredential userCredential =
+              await firebaseAuth.signInWithEmailAndPassword(
+                  email: _emailController.text,
+                  password: _passwordController.text);
+          setState(() {
+            circular = false;
+          });
+          Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (builder) => const ScreenAllNotes()),
+              (route) => false);
+        } catch (e) {
+          final snackbar = SnackBar(content: Text(e.toString()));
+          ScaffoldMessenger.of(context).showSnackBar(snackbar);
+          setState(() {
+            circular = false;
+          });
+        }
+      },
+      child: Container(
+        width: MediaQuery.of(context).size.width - 90,
+        height: 60,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          gradient: const LinearGradient(
+            colors: [
+              Color(0xfffd746c),
+              Color(0xffff9068),
+              Color(0xfffd746c),
+            ],
           ),
+        ),
+        child: Center(
+          child: circular
+              ? const CircularProgressIndicator()
+              : const Text(
+                  "Sign In",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                  ),
+                ),
         ),
       ),
     );
@@ -123,7 +156,11 @@ class _ScreenSignInState extends State<ScreenSignIn> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, size: size),
+            Icon(
+              icon,
+              size: size,
+              color: Colors.white,
+            ),
             const SizedBox(width: 15),
             Text(
               buttonName,
@@ -138,16 +175,25 @@ class _ScreenSignInState extends State<ScreenSignIn> {
     );
   }
 
-  Widget textItem(String labelText) {
+  Widget textItem(
+      String labelText, TextEditingController controller, bool obscureText) {
     return SizedBox(
       width: MediaQuery.of(context).size.width - 70,
       height: 55,
       child: TextFormField(
+        style: const TextStyle(color: Colors.white),
+        controller: controller,
         decoration: InputDecoration(
           labelText: labelText,
           labelStyle: const TextStyle(
             color: Colors.white,
             fontSize: 17,
+          ),
+          focusedBorder: const OutlineInputBorder(
+            borderSide: BorderSide(
+              width: 1.5,
+              color: Colors.amber,
+            ),
           ),
           enabledBorder: const OutlineInputBorder(
             borderSide: BorderSide(

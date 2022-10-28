@@ -8,7 +8,7 @@ class ScreenAllNotes extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('All Notes'),
+        title: const Text('All Notes'),
       ),
       body: SafeArea(
         child: Padding(
