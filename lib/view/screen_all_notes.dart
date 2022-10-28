@@ -1,14 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:note_app_sample/services/auth_service.dart';
 import 'package:note_app_sample/view/screen_add_notes.dart';
+import 'package:note_app_sample/view/screen_signup.dart';
 
 class ScreenAllNotes extends StatelessWidget {
-  const ScreenAllNotes({super.key});
+  ScreenAllNotes({super.key});
+
+  AuthClass authClass = AuthClass();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('All Notes'),
+        actions: [
+          IconButton(
+            onPressed: () async {
+              await authClass.logout();
+              Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (builder) => const ScreenSignUp()),
+                  (route) => false);
+            },
+            icon: const Icon(Icons.logout_outlined),
+          )
+        ],
       ),
       body: SafeArea(
         child: Padding(

@@ -1,7 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:json_annotation/json_annotation.dart';
 import 'package:note_app_sample/firebase_options.dart';
+import 'package:note_app_sample/services/auth_service.dart';
 import 'package:note_app_sample/view/screen_all_notes.dart';
 import 'package:note_app_sample/view/screen_signup.dart';
 
@@ -13,10 +13,35 @@ void main() async {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  /////
+  Widget currentPage = const ScreenSignUp();
+  AuthClass authClass = AuthClass();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    checkLogin();
+  }
+
+  void checkLogin() async {
+    String? uid = await authClass.getToken();
+    print('checkLogin $uid');
+    if (uid != null) {
+      setState(() {
+        currentPage = ScreenAllNotes();
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -24,10 +49,10 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: ThemeData(
         textTheme: const TextTheme(
-          subtitle1: const TextStyle(color: Colors.white),
+          subtitle1: TextStyle(color: Colors.white),
         ),
       ),
-      home: ScreenSignUp(),
+      home: currentPage,
     );
   }
 }

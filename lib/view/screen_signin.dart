@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
+import 'package:note_app_sample/services/auth_service.dart';
 import 'package:note_app_sample/view/screen_all_notes.dart';
 
 class ScreenSignIn extends StatefulWidget {
@@ -16,6 +17,8 @@ class _ScreenSignInState extends State<ScreenSignIn> {
   TextEditingController _passwordController = TextEditingController();
 
   bool circular = false;
+
+  AuthClass authClass = AuthClass();
 
   @override
   Widget build(BuildContext context) {
@@ -37,9 +40,11 @@ class _ScreenSignInState extends State<ScreenSignIn> {
                 ),
               ),
               const SizedBox(height: 20),
-              buttonItem(Icons.mail_outline, "Continue with Google", 25),
+              buttonItem(Icons.mail_outline, "Continue with Google", 25, () {
+                authClass.googleSignIn(context);
+              }),
               const SizedBox(height: 15),
-              buttonItem(Icons.phone, "Continue with Mobile", 25),
+              buttonItem(Icons.phone, "Continue with Mobile", 25, () {}),
               const SizedBox(height: 15),
               const Text(
                 "Or",
@@ -101,7 +106,7 @@ class _ScreenSignInState extends State<ScreenSignIn> {
           });
           Navigator.pushAndRemoveUntil(
               context,
-              MaterialPageRoute(builder: (builder) => const ScreenAllNotes()),
+              MaterialPageRoute(builder: (builder) => ScreenAllNotes()),
               (route) => false);
         } catch (e) {
           final snackbar = SnackBar(content: Text(e.toString()));
@@ -139,37 +144,41 @@ class _ScreenSignInState extends State<ScreenSignIn> {
     );
   }
 
-  Widget buttonItem(IconData icon, String buttonName, double size) {
-    return SizedBox(
-      width: MediaQuery.of(context).size.width - 60,
-      height: 60,
-      child: Card(
-        color: Colors.black,
-        elevation: 8,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15),
-          side: const BorderSide(
-            width: 1,
-            color: Colors.grey,
+  Widget buttonItem(
+      IconData icon, String buttonName, double size, Function() onTap) {
+    return InkWell(
+      onTap: onTap,
+      child: SizedBox(
+        width: MediaQuery.of(context).size.width - 60,
+        height: 60,
+        child: Card(
+          color: Colors.black,
+          elevation: 8,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+            side: const BorderSide(
+              width: 1,
+              color: Colors.grey,
+            ),
           ),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              icon,
-              size: size,
-              color: Colors.white,
-            ),
-            const SizedBox(width: 15),
-            Text(
-              buttonName,
-              style: const TextStyle(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                icon,
+                size: size,
                 color: Colors.white,
-                fontSize: 17,
               ),
-            ),
-          ],
+              const SizedBox(width: 15),
+              Text(
+                buttonName,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 17,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

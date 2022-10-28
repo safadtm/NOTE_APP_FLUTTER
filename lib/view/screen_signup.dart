@@ -116,7 +116,7 @@ class _ScreenSignUpState extends State<ScreenSignUp> {
           });
           Navigator.pushAndRemoveUntil(
               context,
-              MaterialPageRoute(builder: (builder) => const ScreenAllNotes()),
+              MaterialPageRoute(builder: (builder) => ScreenAllNotes()),
               (route) => false);
         } catch (e) {
           final snackbar = SnackBar(content: Text(e.toString()));
