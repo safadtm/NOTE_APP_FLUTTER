@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 
 class ScreenSignUp extends StatefulWidget {
   const ScreenSignUp({super.key});
@@ -8,6 +9,13 @@ class ScreenSignUp extends StatefulWidget {
 }
 
 class _ScreenSignUpState extends State<ScreenSignUp> {
+  firebase_auth.FirebaseAuth firebaseAuth = firebase_auth.FirebaseAuth.instance;
+
+  TextEditingController _emailController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
+
+  bool circular = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,9 +45,9 @@ class _ScreenSignUpState extends State<ScreenSignUp> {
                 style: TextStyle(color: Colors.white, fontSize: 18),
               ),
               const SizedBox(height: 15),
-              textItem("Email...."),
+              textItem("Email....", _emailController, false),
               const SizedBox(height: 15),
-              textItem("Password..."),
+              textItem("Password...", _passwordController, true),
               const SizedBox(height: 30),
               colorButton(),
               const SizedBox(height: 20),
@@ -71,26 +79,52 @@ class _ScreenSignUpState extends State<ScreenSignUp> {
   }
 
   Widget colorButton() {
-    return Container(
-      width: MediaQuery.of(context).size.width - 90,
-      height: 60,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-        gradient: const LinearGradient(
-          colors: [
-            Color(0xfffd746c),
-            Color(0xffff9068),
-            Color(0xfffd746c),
-          ],
-        ),
-      ),
-      child: const Center(
-        child: Text(
-          "Sign Up",
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 20,
+    return InkWell(
+      onTap: () async {
+        setState(() {
+          circular = true;
+        });
+        try {
+          firebase_auth.UserCredential userCredential =
+              await firebaseAuth.createUserWithEmailAndPassword(
+            email: _emailController.text,
+            password: _passwordController.text,
+          );
+          print(userCredential.user!.email);
+          setState(() {
+            circular = false;
+          });
+        } catch (e) {
+          final snackbar = SnackBar(content: Text(e.toString()));
+          ScaffoldMessenger.of(context).showSnackBar(snackbar);
+          setState(() {
+            circular = false;
+          });
+        }
+      },
+      child: Container(
+        width: MediaQuery.of(context).size.width - 90,
+        height: 60,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          gradient: const LinearGradient(
+            colors: [
+              Color(0xfffd746c),
+              Color(0xffff9068),
+              Color(0xfffd746c),
+            ],
           ),
+        ),
+        child: Center(
+          child: circular
+              ? const CircularProgressIndicator()
+              : const Text(
+                  "Sign Up",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                  ),
+                ),
         ),
       ),
     );
@@ -128,16 +162,29 @@ class _ScreenSignUpState extends State<ScreenSignUp> {
     );
   }
 
-  Widget textItem(String labelText) {
+  Widget textItem(
+      String labelText, TextEditingController controller, bool obscureText) {
     return SizedBox(
       width: MediaQuery.of(context).size.width - 70,
       height: 55,
       child: TextFormField(
+        controller: controller,
+        obscureText: obscureText,
+        style: const TextStyle(
+          color: Colors.white,
+          fontSize: 17,
+        ),
         decoration: InputDecoration(
           labelText: labelText,
           labelStyle: const TextStyle(
             color: Colors.white,
             fontSize: 17,
+          ),
+          focusedBorder: const OutlineInputBorder(
+            borderSide: BorderSide(
+              width: 1.5,
+              color: Colors.amber,
+            ),
           ),
           enabledBorder: const OutlineInputBorder(
             borderSide: BorderSide(

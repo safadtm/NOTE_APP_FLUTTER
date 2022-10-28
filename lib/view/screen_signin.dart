@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 
 class ScreenSignIn extends StatefulWidget {
   const ScreenSignIn({super.key});
