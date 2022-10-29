@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:note_app_sample/services/auth_service.dart';
+import 'package:note_app_sample/view/phone_auth.dart';
 import 'package:note_app_sample/view/screen_all_notes.dart';
 import 'package:note_app_sample/view/screen_signin.dart';
 
@@ -14,8 +15,8 @@ class ScreenSignUp extends StatefulWidget {
 class _ScreenSignUpState extends State<ScreenSignUp> {
   firebase_auth.FirebaseAuth firebaseAuth = firebase_auth.FirebaseAuth.instance;
 
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
 
   bool circular = false;
 
@@ -50,7 +51,19 @@ class _ScreenSignUpState extends State<ScreenSignUp> {
                 },
               ),
               const SizedBox(height: 15),
-              buttonItem(Icons.phone, "Continue with Mobile", 25, () {}),
+              buttonItem(
+                Icons.phone,
+                "Continue with Mobile",
+                25,
+                () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (builder) => const ScreenPhoneAuth(),
+                    ),
+                  );
+                },
+              ),
               const SizedBox(height: 15),
               const Text(
                 "Or",
