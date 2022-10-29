@@ -16,7 +16,7 @@ class ScreenAllNotes extends StatelessWidget {
         actions: [
           IconButton(
             onPressed: () async {
-              await authClass.logout();
+              await authClass.logout(context: context);
               Navigator.pushAndRemoveUntil(
                   context,
                   MaterialPageRoute(builder: (builder) => const ScreenSignUp()),

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:note_app_sample/services/auth_service.dart';
 import 'package:otp_text_field/otp_text_field.dart';
 import 'package:otp_text_field/style.dart';
 
@@ -15,6 +16,10 @@ class _ScreenPhoneAuthState extends State<ScreenPhoneAuth> {
   int start = 30;
   bool wait = false;
   String buttonName = 'Send';
+  final TextEditingController phoneController = TextEditingController();
+  AuthClass authClass = AuthClass();
+  String verificationIdFinal = "";
+  String smsCode = "";
 
   @override
   Widget build(BuildContext context) {
@@ -87,20 +92,29 @@ class _ScreenPhoneAuthState extends State<ScreenPhoneAuth> {
                 ),
               ),
               const SizedBox(height: 150),
-              Container(
-                height: 60,
-                width: MediaQuery.of(context).size.width - 60,
-                decoration: BoxDecoration(
-                  color: const Color(0xffff9601),
-                  borderRadius: BorderRadius.circular(15),
-                ),
-                child: const Center(
-                  child: Text(
-                    'Lets Go',
-                    style: TextStyle(
-                      fontSize: 17,
-                      color: Color(0xfffbe2ae),
-                      fontWeight: FontWeight.w700,
+              InkWell(
+                onTap: () {
+                  authClass.signInWithPhoneNumber(
+                    verificationIdFinal,
+                    smsCode,
+                    context,
+                  );
+                },
+                child: Container(
+                  height: 60,
+                  width: MediaQuery.of(context).size.width - 60,
+                  decoration: BoxDecoration(
+                    color: const Color(0xffff9601),
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  child: const Center(
+                    child: Text(
+                      'Lets Go',
+                      style: TextStyle(
+                        fontSize: 17,
+                        color: Color(0xfffbe2ae),
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
                   ),
                 ),
@@ -145,6 +159,9 @@ class _ScreenPhoneAuthState extends State<ScreenPhoneAuth> {
       fieldStyle: FieldStyle.underline,
       onCompleted: (pin) {
         print('Completed $pin');
+        setState(() {
+          smsCode = pin;
+        });
       },
     );
   }
@@ -158,6 +175,8 @@ class _ScreenPhoneAuthState extends State<ScreenPhoneAuth> {
         borderRadius: BorderRadius.circular(15),
       ),
       child: TextFormField(
+        keyboardType: TextInputType.number,
+        controller: phoneController,
         decoration: InputDecoration(
           border: InputBorder.none,
           hintText: "Enter your phone number",
@@ -174,13 +193,15 @@ class _ScreenPhoneAuthState extends State<ScreenPhoneAuth> {
           suffixIcon: InkWell(
             onTap: wait
                 ? null
-                : () {
+                : () async {
                     startTimer();
                     setState(() {
                       start = 30;
                       wait = true;
                       buttonName = 'Resend';
                     });
+                    await authClass.verifyPhoneNumber(
+                        "+91 ${phoneController.text}", context, setData);
                   },
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
@@ -197,5 +218,12 @@ class _ScreenPhoneAuthState extends State<ScreenPhoneAuth> {
         ),
       ),
     );
+  }
+
+  void setData(verificationId) {
+    setState(() {
+      verificationIdFinal = verificationId;
+    });
+    startTimer();
   }
 }

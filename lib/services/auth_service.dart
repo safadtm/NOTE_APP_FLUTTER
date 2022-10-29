@@ -1,3 +1,5 @@
+// ignore_for_file: non_constant_identifier_names
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -74,11 +76,81 @@ class AuthClass {
   }
 
 ////
-  Future<void> logout() async {
+  Future<void> logout({required BuildContext context}) async {
     try {
       await _googleSignIn.signOut();
       await auth.signOut();
       await storage.delete(key: "uid");
-    } catch (e) {}
+    } catch (e) {
+      final snackbar = SnackBar(content: Text(e.toString()));
+      ScaffoldMessenger.of(context).showSnackBar(snackbar);
+    }
+  }
+
+  ///phonenumber
+  Future<void> verifyPhoneNumber(
+      String phoneNumber, BuildContext context, Function setData) async {
+    // ignore: prefer_function_declarations_over_variables
+    PhoneVerificationCompleted verificationCompleted =
+        (PhoneAuthCredential phoneAuthCredential) async {
+      showSnackBar(context, 'Verifcation Completed');
+    };
+
+    // ignore: prefer_function_declarations_over_variables, avoid_types_as_parameter_names
+    PhoneVerificationFailed verificationFailed =
+        (FirebaseAuthException exception) {
+      showSnackBar(context, exception.toString());
+    };
+
+    // ignore: prefer_function_declarations_over_variables
+    PhoneCodeSent codeSent = (verificationId, forceResendingToken) {
+      showSnackBar(context, 'Verifcation Code sent on the phone number');
+      setData(verificationId);
+    };
+
+    // ignore: prefer_function_declarations_over_variables
+    PhoneCodeAutoRetrievalTimeout codeAutoRetrievalTimeout = (verificationId) {
+      showSnackBar(context, 'Time out');
+    };
+
+    try {
+      await auth.verifyPhoneNumber(
+          phoneNumber: phoneNumber,
+          verificationCompleted: verificationCompleted,
+          verificationFailed: verificationFailed,
+          codeSent: codeSent,
+          codeAutoRetrievalTimeout: codeAutoRetrievalTimeout);
+    } catch (e) {
+      showSnackBar(context, e.toString());
+    }
+  }
+
+  Future<void> signInWithPhoneNumber(
+      String verificationId, String smsCode, BuildContext context) async {
+    try {
+      AuthCredential credential = PhoneAuthProvider.credential(
+          verificationId: verificationId, smsCode: smsCode);
+
+      UserCredential userCredential =
+          await auth.signInWithCredential(credential);
+
+      ///
+      storeTokenAndData(userCredential);
+
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (builder) => ScreenAllNotes()),
+          (route) => false);
+
+      showSnackBar(context, "Logged In");
+    } catch (e) {
+      showSnackBar(context, e.toString());
+    }
+  }
+
+////////////
+  void showSnackBar(BuildContext context, String text) {
+    final snackbar = SnackBar(content: Text(text));
+    ScaffoldMessenger.of(context).showSnackBar(snackbar);
   }
 }
