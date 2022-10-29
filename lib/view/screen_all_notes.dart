@@ -27,20 +27,24 @@ class ScreenAllNotes extends StatelessWidget {
         ],
       ),
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: GridView.count(
-            crossAxisCount: 2,
-            mainAxisSpacing: 10,
-            crossAxisSpacing: 10,
-            children: List.generate(
-                10,
-                (index) => NoteItem(
-                      id: index.toString(),
-                      title: 'lores Ipsum Title $index',
-                      content:
-                          'Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime mollitia',
-                    )),
+        child: Container(
+          height: MediaQuery.of(context).size.height,
+          width: MediaQuery.of(context).size.width,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: GridView.count(
+              crossAxisCount: 2,
+              mainAxisSpacing: 10,
+              crossAxisSpacing: 10,
+              children: List.generate(
+                  10,
+                  (index) => NoteItem(
+                        id: index.toString(),
+                        title: 'lores Ipsum Title $index',
+                        content:
+                            'Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime mollitia',
+                      )),
+            ),
           ),
         ),
       ),

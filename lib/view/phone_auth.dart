@@ -146,23 +146,26 @@ class _ScreenPhoneAuthState extends State<ScreenPhoneAuth> {
   }
 
   Widget otpField() {
-    return OTPTextField(
-      length: 6,
-      width: MediaQuery.of(context).size.width - 36,
-      fieldWidth: 56,
-      otpFieldStyle: OtpFieldStyle(
-        backgroundColor: const Color(0xff1d1d1d),
-        borderColor: Colors.white,
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: OTPTextField(
+        length: 6,
+        width: MediaQuery.of(context).size.width - 36,
+        fieldWidth: 56,
+        otpFieldStyle: OtpFieldStyle(
+          backgroundColor: const Color(0xff1d1d1d),
+          borderColor: Colors.white,
+        ),
+        style: const TextStyle(fontSize: 17, color: Colors.white),
+        textFieldAlignment: MainAxisAlignment.spaceAround,
+        fieldStyle: FieldStyle.underline,
+        onCompleted: (pin) {
+          print('Completed $pin');
+          setState(() {
+            smsCode = pin;
+          });
+        },
       ),
-      style: const TextStyle(fontSize: 17, color: Colors.white),
-      textFieldAlignment: MainAxisAlignment.spaceAround,
-      fieldStyle: FieldStyle.underline,
-      onCompleted: (pin) {
-        print('Completed $pin');
-        setState(() {
-          smsCode = pin;
-        });
-      },
     );
   }
 
