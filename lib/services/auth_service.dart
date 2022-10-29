@@ -3,8 +3,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:note_app_sample/view/screen_all_notes.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:note_app_sample/view/home_page.dart';
 
 class AuthClass {
   final GoogleSignIn _googleSignIn = GoogleSignIn(
@@ -42,7 +42,7 @@ class AuthClass {
 
           Navigator.pushAndRemoveUntil(
               context,
-              MaterialPageRoute(builder: (builder) => ScreenAllNotes()),
+              MaterialPageRoute(builder: (builder) => const HomePage()),
               (route) => false);
         } catch (e) {
           ///  print("inner" + e.toString());
@@ -52,7 +52,7 @@ class AuthClass {
         }
         /////
       } else {
-        final snackbar = SnackBar(content: Text("Not able to sign In"));
+        const snackbar = SnackBar(content: Text("Not able to sign In"));
         ScaffoldMessenger.of(context).showSnackBar(snackbar);
       }
     } catch (e) {
@@ -139,7 +139,7 @@ class AuthClass {
 
       Navigator.pushAndRemoveUntil(
           context,
-          MaterialPageRoute(builder: (builder) => ScreenAllNotes()),
+          MaterialPageRoute(builder: (builder) => const HomePage()),
           (route) => false);
 
       showSnackBar(context, "Logged In");

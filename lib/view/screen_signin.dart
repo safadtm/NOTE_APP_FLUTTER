@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:note_app_sample/services/auth_service.dart';
-import 'package:note_app_sample/view/screen_all_notes.dart';
+import 'package:note_app_sample/view/home_page.dart';
 
 class ScreenSignIn extends StatefulWidget {
   const ScreenSignIn({super.key});
@@ -106,7 +106,7 @@ class _ScreenSignInState extends State<ScreenSignIn> {
           });
           Navigator.pushAndRemoveUntil(
               context,
-              MaterialPageRoute(builder: (builder) => ScreenAllNotes()),
+              MaterialPageRoute(builder: (builder) => const HomePage()),
               (route) => false);
         } catch (e) {
           final snackbar = SnackBar(content: Text(e.toString()));

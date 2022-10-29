@@ -2,7 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:note_app_sample/firebase_options.dart';
 import 'package:note_app_sample/services/auth_service.dart';
-import 'package:note_app_sample/view/screen_all_notes.dart';
+import 'package:note_app_sample/view/home_page.dart';
 import 'package:note_app_sample/view/screen_signup.dart';
 
 void main() async {
@@ -27,17 +27,16 @@ class _MyAppState extends State<MyApp> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     checkLogin();
   }
 
   void checkLogin() async {
     String? uid = await authClass.getToken();
-    print('checkLogin $uid');
+    // print('checkLogin $uid');
     if (uid != null) {
       setState(() {
-        currentPage = ScreenAllNotes();
+        currentPage = const HomePage();
       });
     }
   }

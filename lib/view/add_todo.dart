@@ -1,37 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-enum ActionType {
-  addNote,
-  editNote,
-}
-
-class ScreenAddNote extends StatelessWidget {
-  final ActionType type;
-  String? id;
-  ScreenAddNote({
-    Key? key,
-    required this.type,
-    this.id,
-  }) : super(key: key);
-
-  Widget get saveButton => TextButton.icon(
-      onPressed: () {
-        switch (type) {
-          case ActionType.addNote:
-            break;
-          case ActionType.editNote:
-            break;
-        }
-      },
-      icon: const Icon(
-        Icons.save,
-        color: Colors.white,
-      ),
-      label: const Text(
-        'Save',
-        style: TextStyle(color: Colors.white),
-      ));
+class AddTodoPage extends StatelessWidget {
+  const AddTodoPage({super.key});
 
   @override
   Widget build(BuildContext context) {
