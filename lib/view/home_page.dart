@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:note_app_sample/custom/todo_card.dart';
 import 'package:note_app_sample/services/auth_service.dart';
@@ -12,6 +13,9 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   AuthClass authClass = AuthClass();
+
+  final Stream<QuerySnapshot?> _strem =
+      FirebaseFirestore.instance.collection("ToDo").snapshots();
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +72,7 @@ class _HomePageState extends State<HomePage> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (builder) => AddTodoPage()),
+                  MaterialPageRoute(builder: (builder) => const AddTodoPage()),
                 );
               },
               child: Container(
@@ -101,43 +105,58 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        child: Container(
-          height: MediaQuery.of(context).size.height,
-          width: MediaQuery.of(context).size.width,
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-          child: Column(
-            children: const [
-              ToDoCard(
-                title: "Wake up Bro",
+      body: StreamBuilder(
+        stream: _strem,
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          return ListView.builder(
+            itemCount: snapshot.data!.docs.length,
+            itemBuilder: (context, index) {
+              IconData icon;
+              Color iconColor;
+
+              Map<String, dynamic> document =
+                  snapshot.data!.docs[index].data() as Map<String, dynamic>;
+
+              switch (document["Category"]) {
+                case "Food":
+                  icon = Icons.local_grocery_store;
+                  iconColor = Colors.blue;
+                  break;
+                case "WorkOut":
+                  icon = Icons.alarm;
+                  iconColor = Colors.teal;
+                  break;
+                case "Work":
+                  icon = Icons.run_circle_outlined;
+                  iconColor = Colors.red;
+                  break;
+                case "Design":
+                  icon = Icons.design_services;
+                  iconColor = Colors.green;
+                  break;
+                case "Run":
+                  icon = Icons.local_grocery_store;
+                  iconColor = Colors.blue;
+                  break;
+
+                default:
+                  icon = Icons.run_circle_outlined;
+                  iconColor = Colors.red;
+              }
+              return ToDoCard(
+                title: document['title'] ?? "Hey there",
                 check: true,
                 iconBgColor: Colors.white,
-                iconColor: Colors.red,
-                iconData: Icons.alarm,
-                time: "10 AM",
-              ),
-              SizedBox(height: 10),
-              ToDoCard(
-                title: "Wake up Bro!",
-                check: true,
-                iconBgColor: Colors.white,
-                iconColor: Colors.blueAccent,
-                iconData: Icons.alarm,
-                time: "10 AM",
-              ),
-              SizedBox(height: 10),
-              ToDoCard(
-                title: "Wake up Bro2",
-                check: true,
-                iconBgColor: Colors.white,
-                iconColor: Colors.red,
-                iconData: Icons.alarm,
-                time: "10 AM",
-              ),
-              SizedBox(height: 10),
-            ],
-          ),
-        ),
+                iconColor: iconColor,
+                iconData: icon,
+                time: DateTime.now().hour.toString(),
+              );
+            },
+          );
+        },
       ),
     );
   }
