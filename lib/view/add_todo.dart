@@ -1,8 +1,22 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class AddTodoPage extends StatelessWidget {
+class AddTodoPage extends StatefulWidget {
   const AddTodoPage({super.key});
+
+  @override
+  State<AddTodoPage> createState() => _AddTodoPageState();
+}
+
+class _AddTodoPageState extends State<AddTodoPage> {
+  TextEditingController _titleController = TextEditingController();
+
+  TextEditingController _descriptionController = TextEditingController();
+
+  String task = '';
+
+  String category = '';
 
   @override
   Widget build(BuildContext context) {
@@ -66,9 +80,9 @@ class AddTodoPage extends StatelessWidget {
                       const SizedBox(height: 12),
                       Row(
                         children: [
-                          chipData("Important", 0xff2664fa),
+                          taskSelected("Important", 0xff2664fa),
                           const SizedBox(width: 20),
-                          chipData("Planned", 0xff2bc8d9),
+                          taskSelected("Planned", 0xff2bc8d9),
                         ],
                       ),
                       const SizedBox(height: 25),
@@ -81,15 +95,15 @@ class AddTodoPage extends StatelessWidget {
                       Wrap(
                         spacing: 10,
                         children: [
-                          chipData("Food", 0xffff6d6e),
+                          categorySelected("Food", 0xffff6d6e),
                           const SizedBox(width: 15),
-                          chipData("WorkOut", 0xfff29732),
+                          categorySelected("WorkOut", 0xfff29732),
                           const SizedBox(width: 15),
-                          chipData("Work", 0xff6557ff),
+                          categorySelected("Work", 0xff6557ff),
                           const SizedBox(width: 15),
-                          chipData("Design", 0xff234ebd),
+                          categorySelected("Design", 0xff234ebd),
                           const SizedBox(width: 15),
-                          chipData("Run", 0xff2bc8d9),
+                          categorySelected("Run", 0xff2bc8d9),
                         ],
                       ),
                       const SizedBox(height: 50),
@@ -107,24 +121,35 @@ class AddTodoPage extends StatelessWidget {
   }
 
   Widget button(BuildContext context) {
-    return Container(
-      height: 56,
-      width: MediaQuery.of(context).size.width,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-        gradient: const LinearGradient(
-          colors: [
-            Color(0xff8a32f1),
-            Color(0xffad32f9),
-          ],
+    return InkWell(
+      onTap: () {
+        FirebaseFirestore.instance.collection("ToDo").add({
+          "title": _titleController.text,
+          "task": task,
+          "category": category,
+          "description": _descriptionController.text,
+        });
+        Navigator.pop(context);
+      },
+      child: Container(
+        height: 56,
+        width: MediaQuery.of(context).size.width,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          gradient: const LinearGradient(
+            colors: [
+              Color(0xff8a32f1),
+              Color(0xffad32f9),
+            ],
+          ),
         ),
-      ),
-      child: const Center(
-        child: Text(
-          "Add ToDo",
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 18,
+        child: const Center(
+          child: Text(
+            "Add ToDo",
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 18,
+            ),
           ),
         ),
       ),
@@ -140,6 +165,7 @@ class AddTodoPage extends StatelessWidget {
         borderRadius: BorderRadius.circular(15),
       ),
       child: TextFormField(
+        controller: _descriptionController,
         style: const TextStyle(
           color: Colors.grey,
           fontSize: 17,
@@ -158,19 +184,49 @@ class AddTodoPage extends StatelessWidget {
     );
   }
 
-  Widget chipData(String label, int color) {
-    return Chip(
-      backgroundColor: Color(color),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      label: Text(
-        label,
-        style: const TextStyle(
-          color: Colors.white,
-          fontSize: 15,
-          fontWeight: FontWeight.w600,
+  Widget taskSelected(String label, int color) {
+    return InkWell(
+      onTap: () {
+        setState(() {
+          task = label;
+        });
+      },
+      child: Chip(
+        backgroundColor: task == label ? Colors.white : Color(color),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        label: Text(
+          label,
+          style: TextStyle(
+            color: task == label ? Colors.black : Colors.white,
+            fontSize: 15,
+            fontWeight: FontWeight.w600,
+          ),
         ),
+        labelPadding: const EdgeInsets.symmetric(horizontal: 17, vertical: 3.8),
       ),
-      labelPadding: const EdgeInsets.symmetric(horizontal: 17, vertical: 3.8),
+    );
+  }
+
+  Widget categorySelected(String label, int color) {
+    return InkWell(
+      onTap: () {
+        setState(() {
+          category = label;
+        });
+      },
+      child: Chip(
+        backgroundColor: category == label ? Colors.white : Color(color),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        label: Text(
+          label,
+          style: TextStyle(
+            color: category == label ? Colors.black : Colors.white,
+            fontSize: 15,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        labelPadding: const EdgeInsets.symmetric(horizontal: 17, vertical: 3.8),
+      ),
     );
   }
 
@@ -179,10 +235,11 @@ class AddTodoPage extends StatelessWidget {
       height: 55,
       width: MediaQuery.of(context).size.width,
       decoration: BoxDecoration(
-        color: Color(0xff2a2e3d),
+        color: const Color(0xff2a2e3d),
         borderRadius: BorderRadius.circular(15),
       ),
       child: TextFormField(
+        controller: _titleController,
         style: const TextStyle(
           color: Colors.grey,
           fontSize: 17,

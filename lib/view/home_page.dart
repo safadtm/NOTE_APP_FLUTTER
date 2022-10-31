@@ -68,7 +68,7 @@ class _HomePageState extends State<HomePage> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (builder) => const AddTodoPage()),
+                  MaterialPageRoute(builder: (builder) => AddTodoPage()),
                 );
               },
               child: Container(
