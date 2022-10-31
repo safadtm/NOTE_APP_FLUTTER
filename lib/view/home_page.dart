@@ -1,8 +1,11 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+
 import 'package:note_app_sample/custom/todo_card.dart';
 import 'package:note_app_sample/services/auth_service.dart';
 import 'package:note_app_sample/view/add_todo.dart';
+import 'package:note_app_sample/view/view_data.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -16,6 +19,8 @@ class _HomePageState extends State<HomePage> {
 
   final Stream<QuerySnapshot?> _strem =
       FirebaseFirestore.instance.collection("ToDo").snapshots();
+
+  List<Select> selected = [];
 
   @override
   Widget build(BuildContext context) {
@@ -37,22 +42,43 @@ class _HomePageState extends State<HomePage> {
           ),
           SizedBox(width: 25),
         ],
-        bottom: const PreferredSize(
+        bottom: PreferredSize(
           child: Align(
             alignment: Alignment.centerLeft,
             child: Padding(
-              padding: EdgeInsets.only(left: 22),
-              child: Text(
-                "Monday 21",
-                style: TextStyle(
-                  fontSize: 33,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.white,
-                ),
+              padding: const EdgeInsets.only(left: 22),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    "Monday 21",
+                    style: TextStyle(
+                      fontSize: 33,
+                      fontWeight: FontWeight.w600,
+                      color: Color(0xff8a32f1),
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: () {
+                      var instance =
+                          FirebaseFirestore.instance.collection("ToDo");
+
+                      for (int i = 0; i < selected.length; i++) {
+                        // instance.doc().collection('ToDo');
+                        instance.doc().delete();
+                      }
+                    },
+                    icon: const Icon(
+                      Icons.delete,
+                      color: Colors.red,
+                      size: 28,
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
-          preferredSize: Size.fromHeight(35),
+          preferredSize: const Size.fromHeight(35),
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -120,7 +146,7 @@ class _HomePageState extends State<HomePage> {
               Map<String, dynamic> document =
                   snapshot.data!.docs[index].data() as Map<String, dynamic>;
 
-              switch (document["Category"]) {
+              switch (document["category"].toString()) {
                 case "Food":
                   icon = Icons.local_grocery_store;
                   iconColor = Colors.blue;
@@ -138,7 +164,7 @@ class _HomePageState extends State<HomePage> {
                   iconColor = Colors.green;
                   break;
                 case "Run":
-                  icon = Icons.local_grocery_store;
+                  icon = Icons.work;
                   iconColor = Colors.blue;
                   break;
 
@@ -146,13 +172,36 @@ class _HomePageState extends State<HomePage> {
                   icon = Icons.run_circle_outlined;
                   iconColor = Colors.red;
               }
-              return ToDoCard(
-                title: document['title'] ?? "Hey there",
-                check: true,
-                iconBgColor: Colors.white,
-                iconColor: iconColor,
-                iconData: icon,
-                time: DateTime.now().hour.toString(),
+
+              selected.add(
+                Select(
+                  id: snapshot.data!.docs[index].id,
+                  checkValue: false,
+                ),
+              );
+
+              return InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (builder) => ViewTodo(
+                        document: document,
+                        id: snapshot.data!.docs[index].id,
+                      ),
+                    ),
+                  );
+                },
+                child: ToDoCard(
+                  title: document['title'] ?? "Hey there",
+                  check: selected[index].checkValue,
+                  iconBgColor: Colors.white,
+                  iconColor: iconColor,
+                  iconData: icon,
+                  time: DateTime.now().hour.toString(),
+                  index: index,
+                  onChange: onChange,
+                ),
               );
             },
           );
@@ -160,9 +209,23 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
+
+  void onChange(int index) {
+    setState(() {
+      selected[index].checkValue = !selected[index].checkValue;
+    });
+  }
 }
 
-///////////for future use 
+class Select {
+  String id;
+  bool checkValue = false;
+  Select({
+    required this.id,
+    required this.checkValue,
+  });
+}
+//////////for future use 
 /// IconButton(
 ///            icon: const Icon(Icons.logout),
 ///            onPressed: () async {

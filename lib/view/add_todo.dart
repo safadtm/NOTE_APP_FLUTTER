@@ -10,9 +10,9 @@ class AddTodoPage extends StatefulWidget {
 }
 
 class _AddTodoPageState extends State<AddTodoPage> {
-  TextEditingController _titleController = TextEditingController();
+  final TextEditingController _titleController = TextEditingController();
 
-  TextEditingController _descriptionController = TextEditingController();
+  final TextEditingController _descriptionController = TextEditingController();
 
   String task = '';
 
@@ -40,7 +40,9 @@ class _AddTodoPageState extends State<AddTodoPage> {
               children: [
                 const SizedBox(height: 30),
                 IconButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
                   icon: const Icon(
                     CupertinoIcons.arrow_left,
                     color: Colors.white,
@@ -86,9 +88,9 @@ class _AddTodoPageState extends State<AddTodoPage> {
                         ],
                       ),
                       const SizedBox(height: 25),
-                      label('Discription'),
+                      label('Description'),
                       const SizedBox(height: 12),
-                      discription(context),
+                      description(context),
                       const SizedBox(height: 25),
                       label('Category'),
                       const SizedBox(height: 12),
@@ -156,7 +158,7 @@ class _AddTodoPageState extends State<AddTodoPage> {
     );
   }
 
-  Widget discription(BuildContext context) {
+  Widget description(BuildContext context) {
     return Container(
       height: 150,
       width: MediaQuery.of(context).size.width,
@@ -167,13 +169,13 @@ class _AddTodoPageState extends State<AddTodoPage> {
       child: TextFormField(
         controller: _descriptionController,
         style: const TextStyle(
-          color: Colors.grey,
+          color: Colors.white,
           fontSize: 17,
         ),
         maxLines: null,
         decoration: const InputDecoration(
           border: InputBorder.none,
-          hintText: "Discription",
+          hintText: "Description",
           hintStyle: TextStyle(
             color: Colors.grey,
             fontSize: 17,
@@ -241,7 +243,7 @@ class _AddTodoPageState extends State<AddTodoPage> {
       child: TextFormField(
         controller: _titleController,
         style: const TextStyle(
-          color: Colors.grey,
+          color: Colors.white,
           fontSize: 17,
         ),
         decoration: const InputDecoration(
