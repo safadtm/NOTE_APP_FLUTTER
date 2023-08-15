@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "417628177777",
+    "project_id": "login-sample-baacb",
+    "storage_bucket": "login-sample-baacb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:417628177777:android:6b605809897eb4ecaf62d0",
+        "android_client_info": {
+          "package_name": "com.example.note_app_sample"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "417628177777-suabbp3q39fk12fiv6l4rf7sucefkvq4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBA-N_WYVk-k2bTKKIpkLAFaUUKLQBgTxQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "417628177777-suabbp3q39fk12fiv6l4rf7sucefkvq4.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "417628177777-g8a4v6h32l4sia4kt40iott2ig82ej26.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.loginpageSamples"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

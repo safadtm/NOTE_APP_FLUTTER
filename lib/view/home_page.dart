@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import 'package:note_app_sample/custom/todo_card.dart';
 import 'package:note_app_sample/services/auth_service.dart';
@@ -24,6 +25,10 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final now = DateTime.now();
+    final formattedDate = DateFormat('EEEE d').format(now);
+    final formattedTime = DateFormat('hh:mm').format(now);
+
     return Scaffold(
       backgroundColor: Colors.black87,
       appBar: AppBar(
@@ -50,9 +55,9 @@ class _HomePageState extends State<HomePage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
-                    "Monday 21",
-                    style: TextStyle(
+                   Text(
+                   formattedDate,
+                    style: const TextStyle(
                       fontSize: 33,
                       fontWeight: FontWeight.w600,
                       color: Color(0xff8a32f1),
@@ -198,7 +203,7 @@ class _HomePageState extends State<HomePage> {
                   iconBgColor: Colors.white,
                   iconColor: iconColor,
                   iconData: icon,
-                  time: DateTime.now().hour.toString(),
+                  time: formattedTime,
                   index: index,
                   onChange: onChange,
                 ),

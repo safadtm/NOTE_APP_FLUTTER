@@ -48,7 +48,7 @@ class _MyAppState extends State<MyApp> {
       title: 'Flutter Demo',
       theme: ThemeData(
         textTheme: const TextTheme(
-          subtitle1: TextStyle(color: Colors.white),
+          titleMedium: TextStyle(color: Colors.white),
         ),
       ),
       home: currentPage,
